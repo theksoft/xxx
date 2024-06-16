@@ -124,6 +124,7 @@ xxx_sll_node_t* xxx_sll_pop_back(xxx_sll_t* list) {
       assert(p == list->head);
       list->head = NULL;
     }
+    rtn->next = NULL;
     list->count --;
   }
   return rtn;

@@ -212,6 +212,10 @@ static void list_pop_tests() {
   CU_ASSERT_PTR_NULL(xxx_sll_pop(&l));
   CU_ASSERT_PTR_NULL(l.head);
   CU_ASSERT(!l.count);
+  CU_ASSERT_PTR_NULL(n[3].next);
+  CU_ASSERT_PTR_NULL(n[2].next);
+  CU_ASSERT_PTR_NULL(n[1].next);
+  CU_ASSERT_PTR_NULL(n[0].next);
 }
 
 static void list_pop_back_tests() {
@@ -228,6 +232,10 @@ static void list_pop_back_tests() {
   CU_ASSERT_PTR_NULL(xxx_sll_pop_back(&l));
   CU_ASSERT_PTR_NULL(l.head);
   CU_ASSERT(!l.count);
+  CU_ASSERT_PTR_NULL(n[3].next);
+  CU_ASSERT_PTR_NULL(n[2].next);
+  CU_ASSERT_PTR_NULL(n[1].next);
+  CU_ASSERT_PTR_NULL(n[0].next);
 }
 
 static void list_remove_tests() {

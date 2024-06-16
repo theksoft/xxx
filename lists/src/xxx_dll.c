@@ -124,6 +124,7 @@ xxx_dll_node_t* xxx_dll_pop(xxx_dll_t* list) {
       assert(!list->head);
       list->tail = NULL;
     }
+    rtn->previous = rtn->next = NULL;
     list->count --;
   }
   return rtn;
@@ -142,6 +143,7 @@ xxx_dll_node_t* xxx_dll_pop_back(xxx_dll_t* list) {
       assert(rtn == list->head);
       list->head = NULL;
     }
+    rtn->previous = rtn->next = NULL;
     list->count --;
   }
   return rtn;
