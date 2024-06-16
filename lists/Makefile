@@ -15,7 +15,7 @@ DIRS := $(LIBDIR) $(OBJDIR)
 TARGET := $(LIBDIR)/lib$(LIBNAME)
 
 # Source list
-SRCS := xxx_list1d xxx_list2d
+SRCS := xxx_sll_s xxx_dll_s
 
 # Flags
 CFLAGS += -Wall -Wextra -Werror -Wpedantic --pedantic-errors -std=c17
@@ -24,7 +24,7 @@ ARFLAGS := rcs
 
 # Targets
 all: dirs $(TARGET).a $(TARGET)d.a
-	@echo "..... XXX LIBS BUILD DONE / lib = $(LIBNAME) ....."
+	@echo "..... XXX LINKED LIBS BUILD DONE / lib = $(LIBNAME) ....."
 
 # Dependencies management
 DEPS := $(SRCS:%=$(OBJDIR)/%.d)
