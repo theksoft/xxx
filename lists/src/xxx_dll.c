@@ -45,7 +45,7 @@ size_t xxx_dll_count(const xxx_dll_t *list) {
 
 xxx_ll_result_t xxx_dll_push(xxx_dll_t* list, xxx_dll_node_t* node) {
   assert(list);
-  assert(node && !node->next);
+  assert(node && !node->next && !node->previous);
   node->previous = NULL;
   node->next = list->head;
   if (list->head) {
@@ -61,7 +61,7 @@ xxx_ll_result_t xxx_dll_push(xxx_dll_t* list, xxx_dll_node_t* node) {
 
 xxx_ll_result_t xxx_dll_push_back(xxx_dll_t* list, xxx_dll_node_t* node) {
   assert(list);
-  assert(node && !node->next);
+  assert(node && !node->next && !node->previous);
   node->next = NULL;
   node->previous = list->tail;
   if (list->tail) {
@@ -79,7 +79,7 @@ xxx_ll_result_t xxx_dll_push_back(xxx_dll_t* list, xxx_dll_node_t* node) {
 
 xxx_ll_result_t xxx_dll_add_ordered(xxx_dll_t* list, xxx_dll_node_t* node, xxx_ll_compare_t compare) {
   assert(list);
-  assert(node && !node->next);
+  assert(node && !node->next && !node->previous);
   xxx_dll_node_t* p;
   for (p = list->head; p; p = p->next) {
     /* insert before p */

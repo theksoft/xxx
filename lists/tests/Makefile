@@ -16,7 +16,7 @@ LIBTGT := $(LIBDIR)/lib$(APP)
 TARGET := $(BINDIR)/$(APP)
 
 # Source list
-SRCS := main tests tests_sll tests_sll_s tests_dll_s
+SRCS := main tests tests_sll tests_dll tests_sll_s tests_dll_s
 
 # Flags
 CFLAGS += -Wall -Wextra -Werror -Wpedantic --pedantic-errors -std=c17
