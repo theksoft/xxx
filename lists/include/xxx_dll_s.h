@@ -4,6 +4,7 @@
 /*
  * [safe] DOUBLY LINKED LIST
  * The safe version controls:
+ * + the validity of every function parameters
  * + if a node to add is already present or not in the list
  * + if a node to remove is actually present or not in the list
  */
