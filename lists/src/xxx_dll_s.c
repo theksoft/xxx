@@ -1,15 +1,15 @@
-#include "xxx_list2d.h"
+#include "xxx_dll_s.h"
 
 #include <stdlib.h>
 #include <assert.h>
 
 /*============================================================================*/
 
-static int has(const xxx_list2d_t* list, const xxx_list2d_node_t* node);
+static int has(const xxx_dll_s_t* list, const xxx_dll_s_node_t* node);
 
 /*============================================================================*/
 
-xxx_ll_result_t xxx_list2d_node_create(xxx_list2d_node_t* node) {
+xxx_ll_result_t xxx_dll_s_node_create(xxx_dll_s_node_t* node) {
   xxx_ll_result_t rtn = XXX_LL_ERROR;
   if (node) {
     node->previous = node->next = NULL;
@@ -20,13 +20,13 @@ xxx_ll_result_t xxx_list2d_node_create(xxx_list2d_node_t* node) {
 
 /*----------------------------------------------------------------------------*/
 
-xxx_ll_result_t xxx_list2d_node_destroy(xxx_list2d_node_t* node) {
-  return xxx_list2d_node_create(node);
+xxx_ll_result_t xxx_dll_s_node_destroy(xxx_dll_s_node_t* node) {
+  return xxx_dll_s_node_create(node);
 }
 
 /*============================================================================*/
 
-xxx_ll_result_t xxx_list2d_create(xxx_list2d_t* list) {
+xxx_ll_result_t xxx_dll_s_create(xxx_dll_s_t* list) {
   xxx_ll_result_t rtn = XXX_LL_ERROR;
   if (list) {
     list->head = list->tail = NULL;
@@ -38,13 +38,13 @@ xxx_ll_result_t xxx_list2d_create(xxx_list2d_t* list) {
 
 /*----------------------------------------------------------------------------*/
 
-xxx_ll_result_t xxx_list2d_destroy(xxx_list2d_t* list) {
-  return xxx_list2d_create(list);
+xxx_ll_result_t xxx_dll_s_destroy(xxx_dll_s_t* list) {
+  return xxx_dll_s_create(list);
 }
 
 /*----------------------------------------------------------------------------*/
 
-size_t xxx_list2d_count(const xxx_list2d_t *list) {
+size_t xxx_dll_s_count(const xxx_dll_s_t *list) {
   size_t rtn = 0;
   if (list) {
     rtn = list->count;
@@ -54,7 +54,7 @@ size_t xxx_list2d_count(const xxx_list2d_t *list) {
 
 /*============================================================================*/
 
-xxx_ll_result_t xxx_list2d_push(xxx_list2d_t* list, xxx_list2d_node_t* node) {
+xxx_ll_result_t xxx_dll_s_push(xxx_dll_s_t* list, xxx_dll_s_node_t* node) {
   xxx_ll_result_t rtn = XXX_LL_ERROR;
   if (list && node) {
     rtn = XXX_LL_DUPLICATED;
@@ -75,7 +75,7 @@ xxx_ll_result_t xxx_list2d_push(xxx_list2d_t* list, xxx_list2d_node_t* node) {
   return rtn;
 }
 
-xxx_ll_result_t xxx_list2d_push_back(xxx_list2d_t* list, xxx_list2d_node_t* node) {
+xxx_ll_result_t xxx_dll_s_push_back(xxx_dll_s_t* list, xxx_dll_s_node_t* node) {
   xxx_ll_result_t rtn = XXX_LL_ERROR;
   if (list && node) {
     rtn = XXX_LL_DUPLICATED;
@@ -98,12 +98,12 @@ xxx_ll_result_t xxx_list2d_push_back(xxx_list2d_t* list, xxx_list2d_node_t* node
 
 /*----------------------------------------------------------------------------*/
 
-xxx_ll_result_t xxx_list2d_add_ordered(xxx_list2d_t* list, xxx_list2d_node_t* node, xxx_ll_compare_t compare) {
+xxx_ll_result_t xxx_dll_s_add_ordered(xxx_dll_s_t* list, xxx_dll_s_node_t* node, xxx_ll_compare_t compare) {
   xxx_ll_result_t rtn = XXX_LL_ERROR;
   if (list && node && compare) {
     rtn = XXX_LL_DUPLICATED;
     int found = 0;
-    xxx_list2d_node_t* p;
+    xxx_dll_s_node_t* p;
     for (p = list->head; !found && p; p = p->next) {
       found = (p == node);
       /* insert before p */
@@ -143,8 +143,8 @@ xxx_ll_result_t xxx_list2d_add_ordered(xxx_list2d_t* list, xxx_list2d_node_t* no
 
 /*----------------------------------------------------------------------------*/
 
-xxx_list2d_node_t* xxx_list2d_pop(xxx_list2d_t* list) {
-  xxx_list2d_node_t* rtn = NULL;
+xxx_dll_s_node_t* xxx_dll_s_pop(xxx_dll_s_t* list) {
+  xxx_dll_s_node_t* rtn = NULL;
   if (list) {
     rtn  = list->head;
     if (rtn) {
@@ -161,8 +161,8 @@ xxx_list2d_node_t* xxx_list2d_pop(xxx_list2d_t* list) {
 
 /*----------------------------------------------------------------------------*/
 
-xxx_list2d_node_t* xxx_list2d_pop_back(xxx_list2d_t* list) {
-  xxx_list2d_node_t* rtn = NULL;
+xxx_dll_s_node_t* xxx_dll_s_pop_back(xxx_dll_s_t* list) {
+  xxx_dll_s_node_t* rtn = NULL;
   if (list) {
     rtn = list->tail;
     if (rtn) {
@@ -181,12 +181,12 @@ xxx_list2d_node_t* xxx_list2d_pop_back(xxx_list2d_t* list) {
 
 /*----------------------------------------------------------------------------*/
 
-xxx_ll_result_t xxx_list2d_remove(xxx_list2d_t* list, xxx_list2d_node_t* node) {
+xxx_ll_result_t xxx_dll_s_remove(xxx_dll_s_t* list, xxx_dll_s_node_t* node) {
   xxx_ll_result_t rtn = XXX_LL_ERROR;
   if (list && node) {
     rtn = XXX_LL_NOT_FOUND;
     int found = 0;
-    for (xxx_list2d_node_t* p = list->head; !found && p; p = p->next) {
+    for (xxx_dll_s_node_t* p = list->head; !found && p; p = p->next) {
       found = (node == p);
     }
     if (found) {
@@ -214,7 +214,7 @@ xxx_ll_result_t xxx_list2d_remove(xxx_list2d_t* list, xxx_list2d_node_t* node) {
 
 /*============================================================================*/
 
-xxx_ll_result_t xxx_list2d_has(const xxx_list2d_t* list, const xxx_list2d_node_t* node) {
+xxx_ll_result_t xxx_dll_s_has(const xxx_dll_s_t* list, const xxx_dll_s_node_t* node) {
   xxx_ll_result_t rtn = XXX_LL_ERROR;
   if (list && node) {
     rtn = has(list, node) ? XXX_LL_SUCCESS : XXX_LL_NOT_FOUND;
@@ -224,12 +224,12 @@ xxx_ll_result_t xxx_list2d_has(const xxx_list2d_t* list, const xxx_list2d_node_t
 
 /*----------------------------------------------------------------------------*/
 
-xxx_ll_result_t xxx_list2d_foreach(xxx_list2d_t* restrict list, xxx_ll_handler_t handler, void* restrict data) {
+xxx_ll_result_t xxx_dll_s_foreach(xxx_dll_s_t* restrict list, xxx_ll_handler_t handler, void* restrict data) {
   xxx_ll_result_t rtn = XXX_LL_ERROR;
   if (list && handler) {
     rtn = XXX_LL_SUCCESS;
     int stop = 0;
-    for (xxx_list2d_node_t* p = list->head; !stop && p; p = p->next) {
+    for (xxx_dll_s_node_t* p = list->head; !stop && p; p = p->next) {
       if ((stop = !handler(p, data))) {
         rtn = XXX_LL_STOPPED;
       }
@@ -240,12 +240,12 @@ xxx_ll_result_t xxx_list2d_foreach(xxx_list2d_t* restrict list, xxx_ll_handler_t
 
 /*----------------------------------------------------------------------------*/
 
-xxx_ll_result_t xxx_list2d_forsome(xxx_list2d_t* restrict list, xxx_ll_filter_t filter, xxx_ll_handler_t handler, void* restrict data) {
+xxx_ll_result_t xxx_dll_s_forsome(xxx_dll_s_t* restrict list, xxx_ll_filter_t filter, xxx_ll_handler_t handler, void* restrict data) {
   xxx_ll_result_t rtn = XXX_LL_ERROR;
   if (list && handler && filter) {
     rtn = XXX_LL_SUCCESS;
     int stop = 0;
-    for (xxx_list2d_node_t* p = list->head; !stop && p; p = p->next) {
+    for (xxx_dll_s_node_t* p = list->head; !stop && p; p = p->next) {
       if (!filter(p, data)) continue;
       if ((stop = !handler(p, data))) {
         rtn = XXX_LL_STOPPED;
@@ -257,10 +257,10 @@ xxx_ll_result_t xxx_list2d_forsome(xxx_list2d_t* restrict list, xxx_ll_filter_t 
 
 /*----------------------------------------------------------------------------*/
 
-xxx_list2d_node_t* xxx_list2d_find(xxx_list2d_t* restrict list, xxx_ll_match_t match, void* restrict data) {
-  xxx_list2d_node_t* rtn = NULL;
+xxx_dll_s_node_t* xxx_dll_s_find(xxx_dll_s_t* restrict list, xxx_ll_match_t match, void* restrict data) {
+  xxx_dll_s_node_t* rtn = NULL;
   if (list && match) {
-    for (xxx_list2d_node_t* p = list->head; !rtn && p; p = p->next) {
+    for (xxx_dll_s_node_t* p = list->head; !rtn && p; p = p->next) {
       if (match(p, data)) {
         rtn = p;
       }
@@ -271,12 +271,12 @@ xxx_list2d_node_t* xxx_list2d_find(xxx_list2d_t* restrict list, xxx_ll_match_t m
 
 /*============================================================================*/
 
-xxx_ll_result_t xxx_list2d_foreach_r(xxx_list2d_t* restrict list, xxx_ll_handler_t handler, void* restrict data) {
+xxx_ll_result_t xxx_dll_s_foreach_r(xxx_dll_s_t* restrict list, xxx_ll_handler_t handler, void* restrict data) {
   xxx_ll_result_t rtn = XXX_LL_ERROR;
   if (list && handler) {
     rtn = XXX_LL_SUCCESS;
     int stop = 0;
-    for (xxx_list2d_node_t* p = list->tail; !stop && p; p = p->previous) {
+    for (xxx_dll_s_node_t* p = list->tail; !stop && p; p = p->previous) {
       if ((stop = !handler(p, data))) {
         rtn = XXX_LL_STOPPED;
       }
@@ -287,12 +287,12 @@ xxx_ll_result_t xxx_list2d_foreach_r(xxx_list2d_t* restrict list, xxx_ll_handler
 
 /*----------------------------------------------------------------------------*/
 
-xxx_ll_result_t xxx_list2d_forsome_r(xxx_list2d_t* restrict list, xxx_ll_filter_t filter, xxx_ll_handler_t handler, void* restrict data) {
+xxx_ll_result_t xxx_dll_s_forsome_r(xxx_dll_s_t* restrict list, xxx_ll_filter_t filter, xxx_ll_handler_t handler, void* restrict data) {
   xxx_ll_result_t rtn = XXX_LL_ERROR;
   if (list && handler && filter) {
     rtn = XXX_LL_SUCCESS;
     int stop = 0;
-    for (xxx_list2d_node_t* p = list->tail; !stop && p; p = p->previous) {
+    for (xxx_dll_s_node_t* p = list->tail; !stop && p; p = p->previous) {
       if (!filter(p, data)) continue;
       if ((stop = !handler(p, data))) {
         rtn = XXX_LL_STOPPED;
@@ -304,10 +304,10 @@ xxx_ll_result_t xxx_list2d_forsome_r(xxx_list2d_t* restrict list, xxx_ll_filter_
 
 /*----------------------------------------------------------------------------*/
 
-xxx_list2d_node_t* xxx_list2d_find_r(xxx_list2d_t* restrict list, xxx_ll_match_t match, void* restrict data) {
-  xxx_list2d_node_t* rtn = NULL;
+xxx_dll_s_node_t* xxx_dll_s_find_r(xxx_dll_s_t* restrict list, xxx_ll_match_t match, void* restrict data) {
+  xxx_dll_s_node_t* rtn = NULL;
   if (list && match) {
-    for (xxx_list2d_node_t* p = list->tail; !rtn && p; p = p->previous) {
+    for (xxx_dll_s_node_t* p = list->tail; !rtn && p; p = p->previous) {
       if (match(p, data)) {
         rtn = p;
       }
@@ -320,10 +320,10 @@ xxx_list2d_node_t* xxx_list2d_find_r(xxx_list2d_t* restrict list, xxx_ll_match_t
  * INTERNALS                                                                  *
  *============================================================================*/
 
-static int has(const xxx_list2d_t* list, const xxx_list2d_node_t* node) {
+static int has(const xxx_dll_s_t* list, const xxx_dll_s_node_t* node) {
   assert(list && node);
   int found = 0;
-  for (xxx_list2d_node_t* p = list->head; !found && p; p = p->next) {
+  for (xxx_dll_s_node_t* p = list->head; !found && p; p = p->next) {
     found = (p == node);
   }
   return found;

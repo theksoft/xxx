@@ -15,7 +15,7 @@ DIRS := $(LIBDIR) $(OBJDIR)
 TARGET := $(LIBDIR)/lib$(LIBNAME)
 
 # Source list
-SRCS := xxx_sll_s xxx_list2d
+SRCS := xxx_sll_s xxx_dll_s
 
 # Flags
 CFLAGS += -Wall -Wextra -Werror -Wpedantic --pedantic-errors -std=c17
