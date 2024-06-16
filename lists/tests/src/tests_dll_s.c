@@ -1,5 +1,5 @@
 #include "tests.h"
-#include "tests2d.h"
+#include "tests_dll_s.h"
 #include "xxx_dll_s.h"
 #include <CUnit/CUnit.h>
 #include <stdlib.h>
@@ -27,7 +27,7 @@ static void node_create_tests();
 static void node_destroy_errors();
 static void node_destroy_tests();
 
-test_suite_t* get_list2d_node_test() {
+test_suite_t* get_dll_s_node_test() {
   static test_t tests[] = {
     { "Node create errors", node_create_errors },
     { "Node create", node_create_tests },
@@ -37,7 +37,7 @@ test_suite_t* get_list2d_node_test() {
   };
 
   static test_suite_t suite = {
-    .title = "Node 2D creation and destroy",
+    .title = "[safe] Doubly linked list node creation and destroy",
     .init = NULL,
     .cleanup = NULL,
     .tests = tests
@@ -77,7 +77,7 @@ static void list_destroy_tests();
 static void list_count_errors();
 static void list_count_tests();
 
-test_suite_t* get_list2d_list_base_test() {
+test_suite_t* get_dll_s_list_base_test() {
   static test_t tests[] = {
     { "List create errors", list_create_errors },
     { "List create", list_create_tests },
@@ -89,7 +89,7 @@ test_suite_t* get_list2d_list_base_test() {
   };
 
   static test_suite_t suite = {
-    .title = "List 2D creation and destroy",
+    .title = "[safe] Doubly linked list (DLL) creation and destroy",
     .init = NULL,
     .cleanup = NULL,
     .tests = tests
@@ -162,7 +162,7 @@ static void list_pop_back_tests();
 static void list_remove_errors();
 static void list_remove_tests();
 
-test_suite_t* get_list2d_list_manage_test() {
+test_suite_t* get_dll_s_list_manage_test() {
   static test_t tests[] = {
     { "List push errors", list_push_errors },
     { "List push tests", list_push_tests },
@@ -180,7 +180,7 @@ test_suite_t* get_list2d_list_manage_test() {
   };
 
   static test_suite_t suite = {
-    .title = "List 2D management",
+    .title = "[safe] Doubly linked list (DLL) management",
     .init = NULL,
     .cleanup = NULL,
     .tests = tests
@@ -378,7 +378,7 @@ static void list_forsome_tests();
 static void list_find_errors();
 static void list_find_tests();
 
-test_suite_t* get_list2d_list_traverse_test() {
+test_suite_t* get_dll_s_list_traverse_test() {
   static test_t tests[] = {
     { "List has errors", list_has_errors },
     { "List has", list_has_tests },
@@ -392,7 +392,7 @@ test_suite_t* get_list2d_list_traverse_test() {
   };
 
   static test_suite_t suite = {
-    .title = "List 2D traversal",
+    .title = "[safe] Doubly linked list (DLL) traversal",
     .init = NULL,
     .cleanup = NULL,
     .tests = tests
@@ -584,7 +584,7 @@ static void list_forsome_r_tests();
 static void list_find_r_errors();
 static void list_find_r_tests();
 
-test_suite_t* get_list2d_list_traverse_r_test() {
+test_suite_t* get_dll_s_list_traverse_r_test() {
   static test_t tests[] = {
     { "List foreach reverse errors", list_foreach_r_errors },
     { "List foreach reverse tests", list_foreach_r_tests },
@@ -596,7 +596,7 @@ test_suite_t* get_list2d_list_traverse_r_test() {
   };
 
   static test_suite_t suite = {
-    .title = "List 2D reverse traversal",
+    .title = "[safe] Doubly linked list (DLL) reverse traversal",
     .init = NULL,
     .cleanup = NULL,
     .tests = tests

@@ -2,7 +2,7 @@
 #define _XXX_DLL_S_H_
 
 /*
- * DOUBLY LINKED LIST Safe version
+ * [safe] DOUBLY LINKED LIST
  * The safe version controls:
  * + if a node to add is already present or not in the list
  * + if a node to remove is actually present or not in the list

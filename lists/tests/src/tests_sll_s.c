@@ -37,7 +37,7 @@ test_suite_t* get_sll_s_node_test() {
   };
 
   static test_suite_t suite = {
-    .title = "Node 1D creation and destroy",
+    .title = "[safe] Singly linked list node creation and destroy",
     .init = NULL,
     .cleanup = NULL,
     .tests = tests
@@ -87,7 +87,7 @@ test_suite_t* get_sll_s_list_base_test() {
   };
 
   static test_suite_t suite = {
-    .title = "List 1D creation and destroy",
+    .title = "[safe] Singly linked list (SLL) creation and destroy",
     .init = NULL,
     .cleanup = NULL,
     .tests = tests
@@ -176,7 +176,7 @@ test_suite_t* get_sll_s_list_manage_test() {
   };
 
   static test_suite_t suite = {
-    .title = "List 1D management",
+    .title = "[safe] Singly linked list (SLL) management",
     .init = NULL,
     .cleanup = NULL,
     .tests = tests
@@ -380,7 +380,7 @@ test_suite_t* get_sll_s_list_traverse_test() {
   };
 
   static test_suite_t suite = {
-    .title = "List 1D traversal",
+    .title = "[safe] Singly linked list (SLL) traversal",
     .init = NULL,
     .cleanup = NULL,
     .tests = tests

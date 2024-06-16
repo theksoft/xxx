@@ -1,5 +1,5 @@
-#ifndef _TESTS1D_H_
-#define _TESTS1D_H_
+#ifndef _TESTS_SLL_S_H_
+#define _TESTS_SLL_S_H_
 
 #include "tests.h"
 

@@ -2,7 +2,7 @@
 #define _XXX_SLL_S_H_
 
 /*
- * SINGLY LINKED LIST Safe version
+ * [safe] SINGLY LINKED LIST
  * The safe version controls:
  * + if a node to add is already present or not in the list
  * + if a node to remove is actually present or not in the list
