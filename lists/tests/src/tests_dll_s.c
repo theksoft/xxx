@@ -5,9 +5,10 @@
 #include <stdlib.h>
 #include <assert.h>
 
-static void create_list(xxx_dll_s_t* list, xxx_dll_s_node_t* table, size_t count);
-static void check_list(xxx_dll_s_t* list, xxx_dll_s_node_t* table, size_t count);
-static void basic_list_errors(xxx_ll_result_t (*f)(xxx_dll_s_t* list, xxx_dll_s_node_t* node));
+static void create_nodes(xxx_dll_node_t* table, size_t count);
+static void create_list(xxx_dll_t* list, xxx_dll_node_t* table, size_t count);
+static void check_list(xxx_dll_t* list, xxx_dll_node_t* table, size_t count);
+static void basic_list_errors(xxx_ll_result_t (*f)(xxx_dll_t* list, xxx_dll_node_t* node));
 
 static int compare_dummy(void* left, void* right);
 static int find_dummy(void* node, void* data);
@@ -51,7 +52,7 @@ static void node_create_errors() {
 }
 
 static void node_create_tests() {
-  xxx_dll_s_node_t node = { .next = (xxx_dll_s_node_t*)42, .previous = (xxx_dll_s_node_t*)42 };
+  xxx_dll_node_t node = { .next = (xxx_dll_node_t*)42, .previous = (xxx_dll_node_t*)42 };
   CU_ASSERT_EQUAL(xxx_dll_s_node_create(&node), XXX_LL_SUCCESS);
   CU_ASSERT_PTR_NULL(node.next);
   CU_ASSERT_PTR_NULL(node.previous);
@@ -62,7 +63,7 @@ static void node_destroy_errors() {
 }
 
 static void node_destroy_tests() {
-  xxx_dll_s_node_t node = { .next = (xxx_dll_s_node_t*)42, .previous = (xxx_dll_s_node_t*)42 };
+  xxx_dll_node_t node = { .next = (xxx_dll_node_t*)42, .previous = (xxx_dll_node_t*)42 };
   CU_ASSERT_EQUAL(xxx_dll_s_node_destroy(&node), XXX_LL_SUCCESS);
   CU_ASSERT_PTR_NULL(node.next);
   CU_ASSERT_PTR_NULL(node.previous);
@@ -103,7 +104,7 @@ static void list_create_errors() {
 }
 
 static void list_create_tests() {
-  xxx_dll_s_t list = { .head = (xxx_dll_s_node_t*)42, .tail = (xxx_dll_s_node_t*)42, .count = 42 };
+  xxx_dll_t list = { .head = (xxx_dll_node_t*)42, .tail = (xxx_dll_node_t*)42, .count = 42 };
   CU_ASSERT_EQUAL(xxx_dll_s_create(&list), XXX_LL_SUCCESS);
   CU_ASSERT_PTR_NULL(list.head);
   CU_ASSERT_PTR_NULL(list.tail);
@@ -115,7 +116,7 @@ static void list_destroy_errors() {
 }
 
 static void list_destroy_tests() {
-  xxx_dll_s_t list = { .head = (xxx_dll_s_node_t*)42, .tail = (xxx_dll_s_node_t*)42, .count = 42 };
+  xxx_dll_t list = { .head = (xxx_dll_node_t*)42, .tail = (xxx_dll_node_t*)42, .count = 42 };
   CU_ASSERT_EQUAL(xxx_dll_s_destroy(&list), XXX_LL_SUCCESS);
   CU_ASSERT_PTR_NULL(list.head);
   CU_ASSERT_PTR_NULL(list.tail);
@@ -127,8 +128,8 @@ static void list_count_errors() {
 }
 
 static void list_count_tests() {
-  xxx_dll_s_t l;
-  xxx_dll_s_node_t n[4];
+  xxx_dll_t l;
+  xxx_dll_node_t n[4];
 
   CU_ASSERT_EQUAL(xxx_dll_s_create(&l), XXX_LL_SUCCESS);
   CU_ASSERT_EQUAL(xxx_dll_s_count(&l), 0);
@@ -194,9 +195,10 @@ static void list_push_errors() {
 }
 
 static void list_push_tests() {
-  xxx_dll_s_t l;
-  xxx_dll_s_node_t n[4];
+  xxx_dll_t l;
+  xxx_dll_node_t n[4];
   CU_ASSERT_EQUAL(xxx_dll_s_create(&l), XXX_LL_SUCCESS);
+  create_nodes(n, 4);
   CU_ASSERT_EQUAL(xxx_dll_s_push(&l, &n[3]), XXX_LL_SUCCESS);
   check_list(&l, &n[3], 1);
   CU_ASSERT_EQUAL(xxx_dll_s_push(&l, &n[2]), XXX_LL_SUCCESS);
@@ -205,10 +207,10 @@ static void list_push_tests() {
   check_list(&l, &n[1], 3);
   CU_ASSERT_EQUAL(xxx_dll_s_push(&l, &n[0]), XXX_LL_SUCCESS);
   check_list(&l, &n[0], 4);
-  CU_ASSERT_EQUAL(xxx_dll_s_push(&l, &n[0]), XXX_LL_DUPLICATED);
-  CU_ASSERT_EQUAL(xxx_dll_s_push(&l, &n[1]), XXX_LL_DUPLICATED);
-  CU_ASSERT_EQUAL(xxx_dll_s_push(&l, &n[2]), XXX_LL_DUPLICATED);
-  CU_ASSERT_EQUAL(xxx_dll_s_push(&l, &n[3]), XXX_LL_DUPLICATED);
+  CU_ASSERT_EQUAL(xxx_dll_s_push(&l, &n[0]), XXX_LL_ERROR);
+  CU_ASSERT_EQUAL(xxx_dll_s_push(&l, &n[1]), XXX_LL_ERROR);
+  CU_ASSERT_EQUAL(xxx_dll_s_push(&l, &n[2]), XXX_LL_ERROR);
+  CU_ASSERT_EQUAL(xxx_dll_s_push(&l, &n[3]), XXX_LL_ERROR);
   check_list(&l, &n[0], 4);
 }
 
@@ -217,9 +219,10 @@ static void list_push_back_errors() {
 }
 
 static void list_push_back_tests() {
-  xxx_dll_s_t l;
-  xxx_dll_s_node_t n[4];
+  xxx_dll_t l;
+  xxx_dll_node_t n[4];
   CU_ASSERT_EQUAL(xxx_dll_s_create(&l), XXX_LL_SUCCESS);
+  create_nodes(n, 4);
 
   CU_ASSERT_EQUAL(xxx_dll_s_push_back(&l, &n[0]), XXX_LL_SUCCESS);
   check_list(&l, &n[0], 1);
@@ -229,16 +232,16 @@ static void list_push_back_tests() {
   check_list(&l, &n[0], 3);
   CU_ASSERT_EQUAL(xxx_dll_s_push_back(&l, &n[3]), XXX_LL_SUCCESS);
   check_list(&l, &n[0], 4);
-  CU_ASSERT_EQUAL(xxx_dll_s_push_back(&l, &n[0]), XXX_LL_DUPLICATED);
-  CU_ASSERT_EQUAL(xxx_dll_s_push_back(&l, &n[1]), XXX_LL_DUPLICATED);
-  CU_ASSERT_EQUAL(xxx_dll_s_push_back(&l, &n[2]), XXX_LL_DUPLICATED);
-  CU_ASSERT_EQUAL(xxx_dll_s_push_back(&l, &n[3]), XXX_LL_DUPLICATED);
+  CU_ASSERT_EQUAL(xxx_dll_s_push_back(&l, &n[0]), XXX_LL_ERROR);
+  CU_ASSERT_EQUAL(xxx_dll_s_push_back(&l, &n[1]), XXX_LL_ERROR);
+  CU_ASSERT_EQUAL(xxx_dll_s_push_back(&l, &n[2]), XXX_LL_ERROR);
+  CU_ASSERT_EQUAL(xxx_dll_s_push_back(&l, &n[3]), XXX_LL_ERROR);
   check_list(&l, &n[0], 4);
 }
 
 static void list_add_ordered_errors() {
-  xxx_dll_s_t l;
-  xxx_dll_s_node_t n[4];
+  xxx_dll_t l;
+  xxx_dll_node_t n[4];
   create_list(&l, n, 4);
 
   CU_ASSERT_EQUAL(xxx_dll_s_add_ordered(NULL, NULL, NULL), XXX_LL_ERROR);
@@ -251,9 +254,10 @@ static void list_add_ordered_errors() {
 }
 
 static void list_add_ordered_tests() {
-  xxx_dll_s_t l;
-  xxx_dll_s_node_t n[4];
+  xxx_dll_t l;
+  xxx_dll_node_t n[4];
   CU_ASSERT_EQUAL(xxx_dll_s_create(&l), XXX_LL_SUCCESS);
+  create_nodes(n, 4);
 
   CU_ASSERT_EQUAL(xxx_dll_s_add_ordered(&l, &n[2], compare_dummy), XXX_LL_SUCCESS);
   check_list(&l, &n[2], 1);
@@ -264,13 +268,14 @@ static void list_add_ordered_tests() {
   CU_ASSERT_EQUAL(xxx_dll_s_add_ordered(&l, &n[0], compare_dummy), XXX_LL_SUCCESS);
   check_list(&l, &n[0], 4);
 
-  CU_ASSERT_EQUAL(xxx_dll_s_add_ordered(&l, &n[0], compare_dummy), XXX_LL_DUPLICATED);
-  CU_ASSERT_EQUAL(xxx_dll_s_add_ordered(&l, &n[1], compare_dummy), XXX_LL_DUPLICATED);
-  CU_ASSERT_EQUAL(xxx_dll_s_add_ordered(&l, &n[2], compare_dummy), XXX_LL_DUPLICATED);
-  CU_ASSERT_EQUAL(xxx_dll_s_add_ordered(&l, &n[3], compare_dummy), XXX_LL_DUPLICATED);
+  CU_ASSERT_EQUAL(xxx_dll_s_add_ordered(&l, &n[0], compare_dummy), XXX_LL_ERROR);
+  CU_ASSERT_EQUAL(xxx_dll_s_add_ordered(&l, &n[1], compare_dummy), XXX_LL_ERROR);
+  CU_ASSERT_EQUAL(xxx_dll_s_add_ordered(&l, &n[2], compare_dummy), XXX_LL_ERROR);
+  CU_ASSERT_EQUAL(xxx_dll_s_add_ordered(&l, &n[3], compare_dummy), XXX_LL_ERROR);
   check_list(&l, n, 4);
 
   CU_ASSERT_EQUAL(xxx_dll_s_create(&l), XXX_LL_SUCCESS);
+  create_nodes(n, 4);
   CU_ASSERT_EQUAL(xxx_dll_s_add_ordered(&l, &n[0], compare_dummy), XXX_LL_SUCCESS);
   CU_ASSERT_EQUAL(xxx_dll_s_add_ordered(&l, &n[3], compare_dummy), XXX_LL_SUCCESS);
   CU_ASSERT_EQUAL(xxx_dll_s_add_ordered(&l, &n[2], compare_dummy), XXX_LL_SUCCESS);
@@ -283,8 +288,8 @@ static void list_pop_errors() {
 }
 
 static void list_pop_tests() {
-  xxx_dll_s_t l;
-  xxx_dll_s_node_t n[4];
+  xxx_dll_t l;
+  xxx_dll_node_t n[4];
   CU_ASSERT_EQUAL(xxx_dll_s_create(&l), XXX_LL_SUCCESS);
 
   CU_ASSERT_PTR_NULL(xxx_dll_s_pop(&l));
@@ -303,8 +308,8 @@ static void list_pop_back_errors() {
 }
 
 static void list_pop_back_tests() {
-  xxx_dll_s_t l;
-  xxx_dll_s_node_t n[4];
+  xxx_dll_t l;
+  xxx_dll_node_t n[4];
   CU_ASSERT_EQUAL(xxx_dll_s_create(&l), XXX_LL_SUCCESS);
 
   CU_ASSERT_PTR_NULL(xxx_dll_s_pop_back(&l));
@@ -323,19 +328,19 @@ static void list_remove_errors() {
 }
 
 static void list_remove_tests() {
-  xxx_dll_s_t l;
-  xxx_dll_s_node_t n[4], node;
+  xxx_dll_t l;
+  xxx_dll_node_t n[4], node;
   CU_ASSERT_EQUAL(xxx_dll_s_create(&l), XXX_LL_SUCCESS);
   CU_ASSERT_EQUAL(xxx_dll_s_node_create(&node), XXX_LL_SUCCESS);
 
-  CU_ASSERT_EQUAL(xxx_dll_s_remove(&l, &n[0]), XXX_LL_NOT_FOUND);
+  CU_ASSERT_EQUAL(xxx_dll_s_remove(&l, &n[0]), XXX_LL_ERROR);
   create_list(&l, n, 4);
-  CU_ASSERT_EQUAL(xxx_dll_s_remove(&l, &node), XXX_LL_NOT_FOUND);
+  CU_ASSERT_EQUAL(xxx_dll_s_remove(&l, &node), XXX_LL_ERROR);
   CU_ASSERT_EQUAL(xxx_dll_s_remove(&l, &n[2]), XXX_LL_SUCCESS);
   CU_ASSERT_PTR_NULL(n[2].next);
   CU_ASSERT_PTR_NULL(n[2].previous);
   CU_ASSERT_EQUAL(l.count, 3);
-  CU_ASSERT_EQUAL(xxx_dll_s_remove(&l, &n[2]), XXX_LL_NOT_FOUND);
+  CU_ASSERT_EQUAL(xxx_dll_s_remove(&l, &n[2]), XXX_LL_ERROR);
   CU_ASSERT_EQUAL(l.count, 3);
   CU_ASSERT_PTR_EQUAL(l.head, &n[0]);
   CU_ASSERT_PTR_EQUAL(n[0].next, &n[1]);
@@ -348,20 +353,20 @@ static void list_remove_tests() {
   CU_ASSERT_PTR_NULL(n[3].next);
   CU_ASSERT_PTR_NULL(n[3].previous);
   CU_ASSERT_EQUAL(l.count, 2);
-  CU_ASSERT_EQUAL(xxx_dll_s_remove(&l, &n[3]), XXX_LL_NOT_FOUND);
+  CU_ASSERT_EQUAL(xxx_dll_s_remove(&l, &n[3]), XXX_LL_ERROR);
   check_list(&l, n, 2);
   CU_ASSERT_EQUAL(xxx_dll_s_remove(&l, &n[0]), XXX_LL_SUCCESS);
   CU_ASSERT_PTR_NULL(n[0].next);
   CU_ASSERT_PTR_NULL(n[0].previous);
   CU_ASSERT_EQUAL(l.count, 1);
-  CU_ASSERT_EQUAL(xxx_dll_s_remove(&l, &n[0]), XXX_LL_NOT_FOUND);
+  CU_ASSERT_EQUAL(xxx_dll_s_remove(&l, &n[0]), XXX_LL_ERROR);
   check_list(&l, &n[1], 1);
   CU_ASSERT_EQUAL(xxx_dll_s_remove(&l, &n[1]), XXX_LL_SUCCESS);
   CU_ASSERT_PTR_NULL(n[1].next);
   CU_ASSERT_PTR_NULL(n[1].previous);
   CU_ASSERT(!l.count);
   CU_ASSERT_PTR_NULL(l.head);
-  CU_ASSERT_EQUAL(xxx_dll_s_remove(&l, &n[1]), XXX_LL_NOT_FOUND);
+  CU_ASSERT_EQUAL(xxx_dll_s_remove(&l, &n[1]), XXX_LL_ERROR);
   CU_ASSERT(!l.count);
   CU_ASSERT_PTR_NULL(l.head);
   CU_ASSERT_PTR_NULL(l.tail);
@@ -380,14 +385,14 @@ static void list_find_tests();
 
 test_suite_t* get_dll_s_list_traverse_test() {
   static test_t tests[] = {
-    { "List has errors", list_has_errors },
-    { "List has", list_has_tests },
     { "List foreach errors", list_foreach_errors },
     { "List foreach tests", list_foreach_tests },
     { "List forsome errors", list_forsome_errors },
     { "List forsome tests", list_forsome_tests },
     { "List find errors", list_find_errors },
     { "List find tests", list_find_tests },
+    { "List has errors", list_has_errors },
+    { "List has", list_has_tests },
     { NULL, NULL }
   };
 
@@ -401,37 +406,9 @@ test_suite_t* get_dll_s_list_traverse_test() {
   return &suite;
 }
 
-static void list_has_errors() {
-  basic_list_errors((xxx_ll_result_t (*)(xxx_dll_s_t*,xxx_dll_s_node_t*))xxx_dll_s_has);
-}
-
-static void list_has_tests() {
-
-  xxx_dll_s_t l;
-  xxx_dll_s_node_t n[4], node = { .next = NULL, .previous = NULL };
-  create_list(&l, n, 4);
-
-  CU_ASSERT_EQUAL(xxx_dll_s_has(&l, &n[0]), XXX_LL_SUCCESS);
-  CU_ASSERT_EQUAL(xxx_dll_s_has(&l, &n[1]), XXX_LL_SUCCESS);
-  CU_ASSERT_EQUAL(xxx_dll_s_has(&l, &n[2]), XXX_LL_SUCCESS);
-  CU_ASSERT_EQUAL(xxx_dll_s_has(&l, &n[3]), XXX_LL_SUCCESS);
-  CU_ASSERT_EQUAL(xxx_dll_s_has(&l, &node), XXX_LL_NOT_FOUND);
-  check_list(&l, n, 4);
-  l.head = NULL;
-  l.tail = NULL;
-  l.count = 0;
-  CU_ASSERT_EQUAL(xxx_dll_s_has(&l, &n[0]), XXX_LL_NOT_FOUND);
-  CU_ASSERT_EQUAL(xxx_dll_s_has(&l, &n[1]), XXX_LL_NOT_FOUND);
-  CU_ASSERT_EQUAL(xxx_dll_s_has(&l, &n[2]), XXX_LL_NOT_FOUND);
-  CU_ASSERT_EQUAL(xxx_dll_s_has(&l, &n[3]), XXX_LL_NOT_FOUND);
-  CU_ASSERT_PTR_NULL(l.head);
-  CU_ASSERT_PTR_NULL(l.tail);
-  CU_ASSERT(!l.count);
-}
-
 static void list_foreach_errors() {
-  xxx_dll_s_t l;
-  xxx_dll_s_node_t n[4];
+  xxx_dll_t l;
+  xxx_dll_node_t n[4];
   create_list(&l, n, 4);
 
   CU_ASSERT_EQUAL(xxx_dll_s_foreach(NULL, NULL, NULL), XXX_LL_ERROR);
@@ -444,8 +421,8 @@ static void list_foreach_errors() {
 }
 
 static void list_foreach_tests() {
-  xxx_dll_s_t l;
-  xxx_dll_s_node_t n[4];
+  xxx_dll_t l;
+  xxx_dll_node_t n[4];
   CU_ASSERT_EQUAL(xxx_dll_s_create(&l), XXX_LL_SUCCESS);
 
   reset_ctrs();
@@ -473,8 +450,8 @@ static void list_foreach_tests() {
 }
 
 static void list_forsome_errors() {
-  xxx_dll_s_t l;
-  xxx_dll_s_node_t n[4];
+  xxx_dll_t l;
+  xxx_dll_node_t n[4];
   create_list(&l, n, 4);
 
   CU_ASSERT_EQUAL(xxx_dll_s_forsome(NULL, NULL, NULL, NULL), XXX_LL_ERROR);
@@ -495,8 +472,8 @@ static void list_forsome_errors() {
 }
 
 static void list_forsome_tests() {
-  xxx_dll_s_t l;
-  xxx_dll_s_node_t n[4];
+  xxx_dll_t l;
+  xxx_dll_node_t n[4];
   CU_ASSERT_EQUAL(xxx_dll_s_create(&l), XXX_LL_SUCCESS);
 
   reset_ctrs();
@@ -530,8 +507,8 @@ static void list_forsome_tests() {
 }
 
 static void list_find_errors() {
-  xxx_dll_s_t l;
-  xxx_dll_s_node_t n[4];
+  xxx_dll_t l;
+  xxx_dll_node_t n[4];
   create_list(&l, n, 4);
 
   CU_ASSERT_PTR_NULL(xxx_dll_s_find(NULL, NULL, NULL));
@@ -544,8 +521,8 @@ static void list_find_errors() {
 }
 
 static void list_find_tests() {
-  xxx_dll_s_t l;
-  xxx_dll_s_node_t n[4];
+  xxx_dll_t l;
+  xxx_dll_node_t n[4];
   CU_ASSERT_EQUAL(xxx_dll_s_create(&l), XXX_LL_SUCCESS);
 
   reset_ctrs();
@@ -573,6 +550,41 @@ static void list_find_tests() {
   CU_ASSERT_EQUAL(ctrs.find, 4);
 
   check_list(&l, n, 4);
+}
+
+static void list_has_errors() {
+  xxx_dll_t l;
+  xxx_dll_node_t n[4];
+  create_list(&l, n, 4);
+
+  CU_ASSERT_PTR_NULL(xxx_dll_s_has(NULL, NULL));
+  CU_ASSERT_PTR_NULL(xxx_dll_s_has(NULL, &n[0]));
+  CU_ASSERT_PTR_NULL(xxx_dll_s_has(&l, NULL));
+  check_list(&l, n, 4);
+}
+
+static void list_has_tests() {
+
+  xxx_dll_t l;
+  xxx_dll_node_t n[4], node = { .next = NULL, .previous = NULL };
+  create_list(&l, n, 4);
+
+  CU_ASSERT_PTR_EQUAL(xxx_dll_s_has(&l, &n[0]), &n[0]);
+  CU_ASSERT_PTR_EQUAL(xxx_dll_s_has(&l, &n[1]), &n[1]);
+  CU_ASSERT_PTR_EQUAL(xxx_dll_s_has(&l, &n[2]), &n[2]);
+  CU_ASSERT_PTR_EQUAL(xxx_dll_s_has(&l, &n[3]), &n[3]);
+  CU_ASSERT_PTR_NULL(xxx_dll_s_has(&l, &node));
+  check_list(&l, n, 4);
+  l.head = NULL;
+  l.tail = NULL;
+  l.count = 0;
+  CU_ASSERT_PTR_NULL(xxx_dll_s_has(&l, &n[0]));
+  CU_ASSERT_PTR_NULL(xxx_dll_s_has(&l, &n[1]));
+  CU_ASSERT_PTR_NULL(xxx_dll_s_has(&l, &n[2]));
+  CU_ASSERT_PTR_NULL(xxx_dll_s_has(&l, &n[3]));
+  CU_ASSERT_PTR_NULL(l.head);
+  CU_ASSERT_PTR_NULL(l.tail);
+  CU_ASSERT(!l.count);
 }
 
 /*============================================================================*/
@@ -606,8 +618,8 @@ test_suite_t* get_dll_s_list_traverse_r_test() {
 }
 
 static void list_foreach_r_errors() {
-  xxx_dll_s_t l;
-  xxx_dll_s_node_t n[4];
+  xxx_dll_t l;
+  xxx_dll_node_t n[4];
   create_list(&l, n, 4);
 
   CU_ASSERT_EQUAL(xxx_dll_s_foreach_r(NULL, NULL, NULL), XXX_LL_ERROR);
@@ -620,8 +632,8 @@ static void list_foreach_r_errors() {
 }
 
 static void list_foreach_r_tests() {
-  xxx_dll_s_t l;
-  xxx_dll_s_node_t n[4];
+  xxx_dll_t l;
+  xxx_dll_node_t n[4];
   CU_ASSERT_EQUAL(xxx_dll_s_create(&l), XXX_LL_SUCCESS);
 
   reset_ctrs();
@@ -649,8 +661,8 @@ static void list_foreach_r_tests() {
 }
 
 static void list_forsome_r_errors() {
-  xxx_dll_s_t l;
-  xxx_dll_s_node_t n[4];
+  xxx_dll_t l;
+  xxx_dll_node_t n[4];
   create_list(&l, n, 4);
 
   CU_ASSERT_EQUAL(xxx_dll_s_forsome_r(NULL, NULL, NULL, NULL), XXX_LL_ERROR);
@@ -671,8 +683,8 @@ static void list_forsome_r_errors() {
 }
 
 static void list_forsome_r_tests() {
-  xxx_dll_s_t l;
-  xxx_dll_s_node_t n[4];
+  xxx_dll_t l;
+  xxx_dll_node_t n[4];
   CU_ASSERT_EQUAL(xxx_dll_s_create(&l), XXX_LL_SUCCESS);
 
   reset_ctrs();
@@ -706,8 +718,8 @@ static void list_forsome_r_tests() {
 }
 
 static void list_find_r_errors() {
-  xxx_dll_s_t l;
-  xxx_dll_s_node_t n[4];
+  xxx_dll_t l;
+  xxx_dll_node_t n[4];
   create_list(&l, n, 4);
 
   CU_ASSERT_PTR_NULL(xxx_dll_s_find_r(NULL, NULL, NULL));
@@ -720,8 +732,8 @@ static void list_find_r_errors() {
 }
 
 static void list_find_r_tests() {
-  xxx_dll_s_t l;
-  xxx_dll_s_node_t n[4];
+  xxx_dll_t l;
+  xxx_dll_node_t n[4];
   CU_ASSERT_EQUAL(xxx_dll_s_create(&l), XXX_LL_SUCCESS);
 
   reset_ctrs();
@@ -753,11 +765,18 @@ static void list_find_r_tests() {
 
 /*============================================================================*/
 
-static void create_list(xxx_dll_s_t* list, xxx_dll_s_node_t* table, size_t count) {
+static void create_nodes(xxx_dll_node_t* table, size_t count) {
+  assert(table && count);
+  for (size_t i = 0; i < count; i++) {
+    CU_ASSERT_EQUAL(xxx_dll_s_node_create(&table[i]), XXX_LL_SUCCESS);
+  }
+}
+
+static void create_list(xxx_dll_t* list, xxx_dll_node_t* table, size_t count) {
   assert(list && table);
   list->head = list->tail = NULL;
   for (size_t i = 0; i < count; i++) {
-    xxx_dll_s_node_t *p = &table[i];
+    xxx_dll_node_t *p = &table[i];
     p->previous = (i) ? p - 1 : NULL;
     if (i < count - 1)
       p->next = p + 1;
@@ -770,7 +789,7 @@ static void create_list(xxx_dll_s_t* list, xxx_dll_s_node_t* table, size_t count
   }
 }
 
-static void check_list(xxx_dll_s_t* list, xxx_dll_s_node_t* table, size_t count) {
+static void check_list(xxx_dll_t* list, xxx_dll_node_t* table, size_t count) {
   assert(list && table && count);
   CU_ASSERT_EQUAL(xxx_dll_s_count(list), count);
   CU_ASSERT_PTR_EQUAL(list->head, &table[0]);
@@ -781,11 +800,11 @@ static void check_list(xxx_dll_s_t* list, xxx_dll_s_node_t* table, size_t count)
   }
 }
 
-static void basic_list_errors(xxx_ll_result_t (*f)(xxx_dll_s_t* list, xxx_dll_s_node_t* node)) {
+static void basic_list_errors(xxx_ll_result_t (*f)(xxx_dll_t* list, xxx_dll_node_t* node)) {
   assert(f);
 
-  xxx_dll_s_t l;
-  xxx_dll_s_node_t n[4];
+  xxx_dll_t l;
+  xxx_dll_node_t n[4];
   create_list(&l, n, 4);
 
   CU_ASSERT_EQUAL(f(NULL, NULL), XXX_LL_ERROR);

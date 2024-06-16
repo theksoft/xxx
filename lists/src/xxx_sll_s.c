@@ -37,8 +37,7 @@ size_t xxx_sll_s_count(const xxx_sll_t *list) {
 
 xxx_ll_result_t xxx_sll_s_push(xxx_sll_t* list, xxx_sll_node_t* node) {
   xxx_ll_result_t rtn = XXX_LL_ERROR;
-  if (list && node) {
-    rtn = XXX_LL_DUPLICATED;
+  if (list && node && !node->next) {
     if (!xxx_sll_has(list, node)) {
       rtn = xxx_sll_push(list, node);
     }
@@ -51,14 +50,10 @@ xxx_ll_result_t xxx_sll_s_push(xxx_sll_t* list, xxx_sll_node_t* node) {
 /* Reimplementd in order to avoid to mutalize the search traversal            */
 xxx_ll_result_t xxx_sll_s_push_back(xxx_sll_t* list, xxx_sll_node_t* node) {
   xxx_ll_result_t rtn = XXX_LL_ERROR;
-  if (list && node) {
-    rtn = XXX_LL_DUPLICATED;
-    int found = 0;
+  if (list && node && !node->next) {
     xxx_sll_node_t* p;
-    for (p = list->head; !found && p && p->next; p = p->next) {
-      found = (node == p);
-    }
-    if (!found && p != node) {
+    for (p = list->head; p && p->next; p = p->next) {}
+    if (p != node) {
       node->next = NULL;
       if (p) {
         p->next = node;
@@ -74,14 +69,14 @@ xxx_ll_result_t xxx_sll_s_push_back(xxx_sll_t* list, xxx_sll_node_t* node) {
 }
 
 /*----------------------------------------------------------------------------*/
-/* Reimplementd in order to avoid to mutalize the search traversal.           */
-/* It is assumed elements are ordered and that passed the node to insert rank */
-/* the latter cannot be found.                                                */
 
+/* Reimplementd in order to mutalize the search traversal.
+ * It is assumed elements are ordered and that passed the node to insert rank
+ * the latter cannot be found.
+ */
 xxx_ll_result_t xxx_sll_s_add_ordered(xxx_sll_t* list, xxx_sll_node_t* node, xxx_ll_compare_t compare) {
   xxx_ll_result_t rtn = XXX_LL_ERROR;
-  if (list && node && compare) {
-    rtn = XXX_LL_DUPLICATED;
+  if (list && node && !node->next && compare) {
     int found = 0;
     xxx_sll_node_t* p;
     xxx_sll_node_t* prev;

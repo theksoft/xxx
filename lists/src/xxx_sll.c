@@ -133,7 +133,7 @@ xxx_sll_node_t* xxx_sll_pop_back(xxx_sll_t* list) {
 
 xxx_ll_result_t xxx_sll_remove(xxx_sll_t* list, xxx_sll_node_t* node) {
   assert(list && node);
-  xxx_ll_result_t rtn = XXX_LL_NOT_FOUND;
+  xxx_ll_result_t rtn = XXX_LL_ERROR;
   int found = 0;
   xxx_sll_node_t* p;
   xxx_sll_node_t* prev;

@@ -204,10 +204,10 @@ static void list_push_tests() {
   check_list(&l, &n[1], 3);
   CU_ASSERT_EQUAL(xxx_sll_s_push(&l, &n[0]), XXX_LL_SUCCESS);
   check_list(&l, &n[0], 4);
-  CU_ASSERT_EQUAL(xxx_sll_s_push(&l, &n[0]), XXX_LL_DUPLICATED);
-  CU_ASSERT_EQUAL(xxx_sll_s_push(&l, &n[1]), XXX_LL_DUPLICATED);
-  CU_ASSERT_EQUAL(xxx_sll_s_push(&l, &n[2]), XXX_LL_DUPLICATED);
-  CU_ASSERT_EQUAL(xxx_sll_s_push(&l, &n[3]), XXX_LL_DUPLICATED);
+  CU_ASSERT_EQUAL(xxx_sll_s_push(&l, &n[0]), XXX_LL_ERROR);
+  CU_ASSERT_EQUAL(xxx_sll_s_push(&l, &n[1]), XXX_LL_ERROR);
+  CU_ASSERT_EQUAL(xxx_sll_s_push(&l, &n[2]), XXX_LL_ERROR);
+  CU_ASSERT_EQUAL(xxx_sll_s_push(&l, &n[3]), XXX_LL_ERROR);
   check_list(&l, &n[0], 4);
 }
 
@@ -229,10 +229,10 @@ static void list_push_back_tests() {
   check_list(&l, &n[0], 3);
   CU_ASSERT_EQUAL(xxx_sll_s_push_back(&l, &n[3]), XXX_LL_SUCCESS);
   check_list(&l, &n[0], 4);
-  CU_ASSERT_EQUAL(xxx_sll_s_push_back(&l, &n[0]), XXX_LL_DUPLICATED);
-  CU_ASSERT_EQUAL(xxx_sll_s_push_back(&l, &n[1]), XXX_LL_DUPLICATED);
-  CU_ASSERT_EQUAL(xxx_sll_s_push_back(&l, &n[2]), XXX_LL_DUPLICATED);
-  CU_ASSERT_EQUAL(xxx_sll_s_push_back(&l, &n[3]), XXX_LL_DUPLICATED);
+  CU_ASSERT_EQUAL(xxx_sll_s_push_back(&l, &n[0]), XXX_LL_ERROR);
+  CU_ASSERT_EQUAL(xxx_sll_s_push_back(&l, &n[1]), XXX_LL_ERROR);
+  CU_ASSERT_EQUAL(xxx_sll_s_push_back(&l, &n[2]), XXX_LL_ERROR);
+  CU_ASSERT_EQUAL(xxx_sll_s_push_back(&l, &n[3]), XXX_LL_ERROR);
   check_list(&l, &n[0], 4);
 }
 
@@ -265,10 +265,10 @@ static void list_add_ordered_tests() {
   CU_ASSERT_EQUAL(xxx_sll_s_add_ordered(&l, &n[0], compare_dummy), XXX_LL_SUCCESS);
   check_list(&l, &n[0], 4);
 
-  CU_ASSERT_EQUAL(xxx_sll_s_add_ordered(&l, &n[0], compare_dummy), XXX_LL_DUPLICATED);
-  CU_ASSERT_EQUAL(xxx_sll_s_add_ordered(&l, &n[1], compare_dummy), XXX_LL_DUPLICATED);
-  CU_ASSERT_EQUAL(xxx_sll_s_add_ordered(&l, &n[2], compare_dummy), XXX_LL_DUPLICATED);
-  CU_ASSERT_EQUAL(xxx_sll_s_add_ordered(&l, &n[3], compare_dummy), XXX_LL_DUPLICATED);
+  CU_ASSERT_EQUAL(xxx_sll_s_add_ordered(&l, &n[0], compare_dummy), XXX_LL_ERROR);
+  CU_ASSERT_EQUAL(xxx_sll_s_add_ordered(&l, &n[1], compare_dummy), XXX_LL_ERROR);
+  CU_ASSERT_EQUAL(xxx_sll_s_add_ordered(&l, &n[2], compare_dummy), XXX_LL_ERROR);
+  CU_ASSERT_EQUAL(xxx_sll_s_add_ordered(&l, &n[3], compare_dummy), XXX_LL_ERROR);
   check_list(&l, n, 4);
 
   CU_ASSERT_EQUAL(xxx_sll_s_create(&l), XXX_LL_SUCCESS);
@@ -330,13 +330,13 @@ static void list_remove_tests() {
   CU_ASSERT_EQUAL(xxx_sll_s_create(&l), XXX_LL_SUCCESS);
   CU_ASSERT_EQUAL(xxx_sll_s_node_create(&node), XXX_LL_SUCCESS);
 
-  CU_ASSERT_EQUAL(xxx_sll_s_remove(&l, &n[0]), XXX_LL_NOT_FOUND);
+  CU_ASSERT_EQUAL(xxx_sll_s_remove(&l, &n[0]), XXX_LL_ERROR);
   create_list(&l, n, 4);
-  CU_ASSERT_EQUAL(xxx_sll_s_remove(&l, &node), XXX_LL_NOT_FOUND);
+  CU_ASSERT_EQUAL(xxx_sll_s_remove(&l, &node), XXX_LL_ERROR);
   CU_ASSERT_EQUAL(xxx_sll_s_remove(&l, &n[2]), XXX_LL_SUCCESS);
   CU_ASSERT_PTR_NULL(n[2].next);
   CU_ASSERT_EQUAL(l.count, 3);
-  CU_ASSERT_EQUAL(xxx_sll_s_remove(&l, &n[2]), XXX_LL_NOT_FOUND);
+  CU_ASSERT_EQUAL(xxx_sll_s_remove(&l, &n[2]), XXX_LL_ERROR);
   CU_ASSERT_EQUAL(l.count, 3);
   CU_ASSERT_PTR_EQUAL(l.head, &n[0]);
   CU_ASSERT_PTR_EQUAL(n[0].next, &n[1]);
@@ -345,18 +345,18 @@ static void list_remove_tests() {
   CU_ASSERT_EQUAL(xxx_sll_s_remove(&l, &n[3]), XXX_LL_SUCCESS);
   CU_ASSERT_PTR_NULL(n[3].next);
   CU_ASSERT_EQUAL(l.count, 2);
-  CU_ASSERT_EQUAL(xxx_sll_s_remove(&l, &n[3]), XXX_LL_NOT_FOUND);
+  CU_ASSERT_EQUAL(xxx_sll_s_remove(&l, &n[3]), XXX_LL_ERROR);
   check_list(&l, n, 2);
   CU_ASSERT_EQUAL(xxx_sll_s_remove(&l, &n[0]), XXX_LL_SUCCESS);
   CU_ASSERT_PTR_NULL(n[0].next);
   CU_ASSERT_EQUAL(l.count, 1);
-  CU_ASSERT_EQUAL(xxx_sll_s_remove(&l, &n[0]), XXX_LL_NOT_FOUND);
+  CU_ASSERT_EQUAL(xxx_sll_s_remove(&l, &n[0]), XXX_LL_ERROR);
   check_list(&l, &n[1], 1);
   CU_ASSERT_EQUAL(xxx_sll_s_remove(&l, &n[1]), XXX_LL_SUCCESS);
   CU_ASSERT_PTR_NULL(n[1].next);
   CU_ASSERT(!l.count);
   CU_ASSERT_PTR_NULL(l.head);
-  CU_ASSERT_EQUAL(xxx_sll_s_remove(&l, &n[1]), XXX_LL_NOT_FOUND);
+  CU_ASSERT_EQUAL(xxx_sll_s_remove(&l, &n[1]), XXX_LL_ERROR);
   CU_ASSERT(!l.count);
   CU_ASSERT_PTR_NULL(l.head);
 }

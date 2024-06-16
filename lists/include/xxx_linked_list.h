@@ -4,8 +4,6 @@
 typedef enum {
   XXX_LL_SUCCESS,
   XXX_LL_ERROR,
-  XXX_LL_DUPLICATED,
-  XXX_LL_NOT_FOUND,
   XXX_LL_STOPPED
 } xxx_ll_result_t;
 
