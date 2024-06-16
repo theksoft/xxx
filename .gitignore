@@ -1,3 +1,10 @@
+# custom
+.vscode/
+build/
+*/build/
+*/tests/build/
+*.todo
+
 # Prerequisites
 *.d
 
