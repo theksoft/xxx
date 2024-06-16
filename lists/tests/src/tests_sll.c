@@ -416,7 +416,7 @@ static void list_has_tests() {
 static void create_nodes(xxx_sll_node_t* table, size_t count) {
   assert(table && count);
   for (size_t i = 0; i < count; i++) {
-    table[i].next = NULL;
+    CU_ASSERT_EQUAL(xxx_sll_node_create(&table[i]), XXX_LL_SUCCESS);
   }
 }
 

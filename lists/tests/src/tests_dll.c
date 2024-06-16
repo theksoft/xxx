@@ -541,7 +541,7 @@ static void list_find_r_tests() {
 static void create_nodes(xxx_dll_node_t* table, size_t count) {
   assert(table && count);
   for (size_t i = 0; i < count; i++) {
-    table[i].next = table[i].previous = NULL;
+    CU_ASSERT_EQUAL(xxx_dll_node_create(&table[i]), XXX_LL_SUCCESS);
   }
 }
 
