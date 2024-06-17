@@ -1,6 +1,6 @@
 # Default variables
 BUILD ?= ./build
-LIBNAME ?= xxx_lists
+LIBNAME ?= xxx_linked_lists
 
 # Directories
 SRCDIR := src
@@ -15,7 +15,7 @@ DIRS := $(LIBDIR) $(OBJDIR)
 TARGET := $(LIBDIR)/lib$(LIBNAME)
 
 # Source list
-SRCS := xxx_sll_s xxx_dll_s
+SRCS := xxx_sll xxx_dll xxx_sll_s xxx_dll_s
 
 # Flags
 CFLAGS += -Wall -Wextra -Werror -Wpedantic --pedantic-errors -std=c17
