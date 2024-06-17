@@ -192,6 +192,17 @@ test_suite_t* get_dll_s_list_manage_test() {
 
 static void list_push_errors() {
   basic_list_errors(xxx_dll_s_push);
+  xxx_dll_t l;
+  xxx_dll_node_t node = {0};
+  CU_ASSERT_EQUAL(xxx_dll_s_create(&l), XXX_LL_SUCCESS);
+  node.previous = node.next = &node;
+  CU_ASSERT_EQUAL(xxx_dll_s_push(&l, &node), XXX_LL_ERROR);
+  node.next = NULL;
+  node.previous = &node;
+  CU_ASSERT_EQUAL(xxx_dll_s_push(&l, &node), XXX_LL_ERROR);
+  node.previous = NULL;
+  node.next = &node;
+  CU_ASSERT_EQUAL(xxx_dll_s_push(&l, &node), XXX_LL_ERROR);
 }
 
 static void list_push_tests() {
@@ -216,6 +227,17 @@ static void list_push_tests() {
 
 static void list_push_back_errors() {
   basic_list_errors(xxx_dll_s_push_back);
+  xxx_dll_t l;
+  xxx_dll_node_t node = {0};
+  CU_ASSERT_EQUAL(xxx_dll_s_create(&l), XXX_LL_SUCCESS);
+  node.previous = node.next = &node;
+  CU_ASSERT_EQUAL(xxx_dll_s_push_back(&l, &node), XXX_LL_ERROR);
+  node.next = NULL;
+  node.previous = &node;
+  CU_ASSERT_EQUAL(xxx_dll_s_push_back(&l, &node), XXX_LL_ERROR);
+  node.previous = NULL;
+  node.next = &node;
+  CU_ASSERT_EQUAL(xxx_dll_s_push_back(&l, &node), XXX_LL_ERROR);
 }
 
 static void list_push_back_tests() {
@@ -251,6 +273,16 @@ static void list_add_ordered_errors() {
   CU_ASSERT_EQUAL(xxx_dll_s_add_ordered(&l, NULL, compare_dummy), XXX_LL_ERROR);
   CU_ASSERT_EQUAL(xxx_dll_s_add_ordered(&l, &n[0], NULL), XXX_LL_ERROR);
   check_list(&l, n, 4);
+
+  xxx_dll_node_t node = {0};
+  node.previous = node.next = &node;
+  CU_ASSERT_EQUAL(xxx_dll_s_add_ordered(&l, &node, compare_dummy), XXX_LL_ERROR);
+  node.next = NULL;
+  node.previous = &node;
+  CU_ASSERT_EQUAL(xxx_dll_s_add_ordered(&l, &node, compare_dummy), XXX_LL_ERROR);
+  node.previous = NULL;
+  node.next = &node;
+  CU_ASSERT_EQUAL(xxx_dll_s_add_ordered(&l, &node, compare_dummy), XXX_LL_ERROR);
 }
 
 static void list_add_ordered_tests() {
@@ -374,14 +406,14 @@ static void list_remove_tests() {
 
 /*============================================================================*/
 
-static void list_has_errors();
-static void list_has_tests();
 static void list_foreach_errors();
 static void list_foreach_tests();
 static void list_forsome_errors();
 static void list_forsome_tests();
 static void list_find_errors();
 static void list_find_tests();
+static void list_has_errors();
+static void list_has_tests();
 
 test_suite_t* get_dll_s_list_traverse_test() {
   static test_t tests[] = {

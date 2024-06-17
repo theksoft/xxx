@@ -38,7 +38,7 @@ test_suite_t* get_sll_s_node_test() {
   };
 
   static test_suite_t suite = {
-    .title = "[safe] Singly linked list node creation and destroy",
+    .title = "[safe] Singly linked list node creation and destroy (additional)",
     .init = NULL,
     .cleanup = NULL,
     .tests = tests
@@ -188,6 +188,10 @@ test_suite_t* get_sll_s_list_manage_test() {
 
 static void list_push_errors() {
   basic_list_errors(xxx_sll_s_push);
+  xxx_sll_t l;
+  xxx_sll_node_t n = { .next = (xxx_sll_node_t*)42 };
+  CU_ASSERT_EQUAL(xxx_sll_s_create(&l), XXX_LL_SUCCESS);
+  CU_ASSERT_EQUAL(xxx_sll_s_push(&l, &n), XXX_LL_ERROR);
 }
 
 static void list_push_tests() {
@@ -213,6 +217,10 @@ static void list_push_tests() {
 
 static void list_push_back_errors() {
   basic_list_errors(xxx_sll_s_push_back);
+  xxx_sll_t l;
+  xxx_sll_node_t n = { .next = (xxx_sll_node_t*)42 };
+  CU_ASSERT_EQUAL(xxx_sll_s_create(&l), XXX_LL_SUCCESS);
+  CU_ASSERT_EQUAL(xxx_sll_s_push_back(&l, &n), XXX_LL_ERROR);
 }
 
 static void list_push_back_tests() {
@@ -240,13 +248,16 @@ static void list_add_ordered_errors() {
   xxx_sll_t l;
   xxx_sll_node_t n[4];
   create_list(&l, n, 4);
+  xxx_sll_node_t node = { 0 };
 
   CU_ASSERT_EQUAL(xxx_sll_s_add_ordered(NULL, NULL, NULL), XXX_LL_ERROR);
   CU_ASSERT_EQUAL(xxx_sll_s_add_ordered(NULL, NULL, compare_dummy), XXX_LL_ERROR);
-  CU_ASSERT_EQUAL(xxx_sll_s_add_ordered(NULL, &n[0], compare_dummy), XXX_LL_ERROR);
-  CU_ASSERT_EQUAL(xxx_sll_s_add_ordered(NULL, &n[0], NULL), XXX_LL_ERROR);
+  CU_ASSERT_EQUAL(xxx_sll_s_add_ordered(NULL, &node, compare_dummy), XXX_LL_ERROR);
+  CU_ASSERT_EQUAL(xxx_sll_s_add_ordered(NULL, &node, NULL), XXX_LL_ERROR);
   CU_ASSERT_EQUAL(xxx_sll_s_add_ordered(&l, NULL, compare_dummy), XXX_LL_ERROR);
-  CU_ASSERT_EQUAL(xxx_sll_s_add_ordered(&l, &n[0], NULL), XXX_LL_ERROR);
+  CU_ASSERT_EQUAL(xxx_sll_s_add_ordered(&l, &node, NULL), XXX_LL_ERROR);
+  node.next = &node;
+  CU_ASSERT_EQUAL(xxx_sll_s_add_ordered(&l, &node, compare_dummy), XXX_LL_ERROR);
   check_list(&l, n, 4);
 }
 
